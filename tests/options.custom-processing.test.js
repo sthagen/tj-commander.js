@@ -31,7 +31,7 @@ test('when option not specified then value is undefined', () => {
   program
     .option('-i, --integer <n>', 'number', myParseInt);
   program.parse(['node', 'test']);
-  expect(program.integer).toBeUndefined();
+  expect(program.opts().integer).toBeUndefined();
 });
 
 test('when starting value is defined and option not specified then callback not called', () => {
@@ -50,7 +50,7 @@ test('when starting value is defined and option not specified then value is star
   program
     .option('-i, --integer <n>', 'number', myParseInt, startingValue);
   program.parse(['node', 'test']);
-  expect(program.integer).toBe(startingValue);
+  expect(program.opts().integer).toBe(startingValue);
 });
 
 test('when option specified then callback called with value', () => {
@@ -63,7 +63,7 @@ test('when option specified then callback called with value', () => {
   expect(mockCoercion).toHaveBeenCalledWith(value, undefined);
 });
 
-test('when option specified then value is as returned from callback ', () => {
+test('when option specified then value is as returned from callback', () => {
   const callbackResult = 2;
   const program = new commander.Command();
   program
@@ -71,7 +71,7 @@ test('when option specified then value is as returned from callback ', () => {
       return callbackResult;
     });
   program.parse(['node', 'test', '-i', '0']);
-  expect(program.integer).toBe(callbackResult);
+  expect(program.opts().integer).toBe(callbackResult);
 });
 
 test('when starting value is defined and option specified then callback called with value and starting value', () => {
@@ -98,6 +98,16 @@ test('when option specified multiple times then callback called with value and p
   expect(mockCoercion).toHaveBeenNthCalledWith(2, '2', 'callback');
 });
 
+// this is the happy path, testing failure case in command.exitOverride.test.js
+test('when option argument in choices then option set', () => {
+  const program = new commander.Command();
+  program
+    .exitOverride()
+    .addOption(new commander.Option('--colour <shade>').choices(['red', 'blue']));
+  program.parse(['--colour', 'red'], { from: 'user' });
+  expect(program.opts().colour).toBe('red');
+});
+
 // Now some functional tests like the examples in the README!
 
 test('when parseFloat "1e2" then value is 100', () => {
@@ -105,7 +115,7 @@ test('when parseFloat "1e2" then value is 100', () => {
   program
     .option('-f, --float <number>', 'float argument', parseFloat);
   program.parse(['node', 'test', '-f', '1e2']);
-  expect(program.float).toBe(100);
+  expect(program.opts().float).toBe(100);
 });
 
 test('when myParseInt "1" then value is 1', () => {
@@ -113,7 +123,7 @@ test('when myParseInt "1" then value is 1', () => {
   program
     .option('-i, --integer <number>', 'integer argument', myParseInt);
   program.parse(['node', 'test', '-i', '1']);
-  expect(program.integer).toBe(1);
+  expect(program.opts().integer).toBe(1);
 });
 
 test('when increaseVerbosity -v -v -v then value is 3', () => {
@@ -121,7 +131,7 @@ test('when increaseVerbosity -v -v -v then value is 3', () => {
   program
     .option('-v, --verbose', 'verbosity that can be increased', increaseVerbosity, 0);
   program.parse(['node', 'test', '-v', '-v', '-v']);
-  expect(program.verbose).toBe(3);
+  expect(program.opts().verbose).toBe(3);
 });
 
 test('when collect -c a -c b -c c then value is [a, b, c]', () => {
@@ -129,7 +139,7 @@ test('when collect -c a -c b -c c then value is [a, b, c]', () => {
   program
     .option('-c, --collect <value>', 'repeatable value', collect, []);
   program.parse(['node', 'test', '-c', 'a', '-c', 'b', '-c', 'c']);
-  expect(program.collect).toEqual(['a', 'b', 'c']);
+  expect(program.opts().collect).toEqual(['a', 'b', 'c']);
 });
 
 test('when commaSeparatedList x,y,z then value is [x, y, z]', () => {
@@ -137,5 +147,5 @@ test('when commaSeparatedList x,y,z then value is [x, y, z]', () => {
   program
     .option('-l, --list <items>', 'comma separated list', commaSeparatedList);
   program.parse(['node', 'test', '--list', 'x,y,z']);
-  expect(program.list).toEqual(['x', 'y', 'z']);
+  expect(program.opts().list).toEqual(['x', 'y', 'z']);
 });

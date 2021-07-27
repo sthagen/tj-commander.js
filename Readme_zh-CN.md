@@ -1,45 +1,57 @@
 # Commander.js
 
-[![Build Status](https://api.travis-ci.org/tj/commander.js.svg?branch=master)](http://travis-ci.org/tj/commander.js)
+[![Build Status](https://github.com/tj/commander.js/workflows/build/badge.svg)](https://github.com/tj/commander.js/actions?query=workflow%3A%22build%22)
 [![NPM Version](http://img.shields.io/npm/v/commander.svg?style=flat)](https://www.npmjs.org/package/commander)
 [![NPM Downloads](https://img.shields.io/npm/dm/commander.svg?style=flat)](https://npmcharts.com/compare/commander?minimal=true)
 [![Install Size](https://packagephobia.now.sh/badge?p=commander)](https://packagephobia.now.sh/result?p=commander)
 
-[node.js](http://nodejs.org) 命令行接口的完整解决方案，灵感来自 Ruby 的 [commander](https://github.com/commander-rb/commander)。
+完整的 [node.js](http://nodejs.org) 命令行解决方案。
 
-用其他语言阅读：[English](./Readme.md) | 简体中文
+使用其他语言阅读：[English](./Readme.md) | 简体中文
 
 - [Commander.js](#commanderjs)
   - [安装](#%e5%ae%89%e8%a3%85)
-  - [声明program变量](#%e5%a3%b0%e6%98%8eprogram%e5%8f%98%e9%87%8f)
+  - [声明 program 变量](#%e5%a3%b0%e6%98%8e-program-%e5%8f%98%e9%87%8f)
   - [选项](#%e9%80%89%e9%a1%b9)
-    - [常用选项类型，boolean和值](#%e5%b8%b8%e7%94%a8%e9%80%89%e9%a1%b9%e7%b1%bb%e5%9e%8bboolean%e5%92%8c%e5%80%bc)
-    - [默认选项值](#%e9%bb%98%e8%ae%a4%e9%80%89%e9%a1%b9%e5%80%bc)
-    - [其他选项类型，可忽略的布尔值和标志值](#%e5%85%b6%e4%bb%96%e9%80%89%e9%a1%b9%e7%b1%bb%e5%9e%8b%e5%8f%af%e5%bf%bd%e7%95%a5%e7%9a%84%e5%b8%83%e5%b0%94%e5%80%bc%e5%92%8c%e6%a0%87%e5%bf%97%e5%80%bc)
-    - [自定义选项处理](#%e8%87%aa%e5%ae%9a%e4%b9%89%e9%80%89%e9%a1%b9%e5%a4%84%e7%90%86)
-    - [必需的选项](#%e5%bf%85%e9%9c%80%e7%9a%84%e9%80%89%e9%a1%b9)
+    - [常用选项类型，boolean 型选项和带参数的选项](#%e5%b8%b8%e7%94%a8%e9%80%89%e9%a1%b9%e7%b1%bb%e5%9e%8bboolean-%e5%9e%8b%e9%80%89%e9%a1%b9%e5%92%8c%e5%b8%a6%e5%8f%82%e6%95%b0%e9%80%89%e9%a1%b9)
+    - [选项的默认值](#%E9%80%89%E9%A1%B9%E7%9A%84%E9%BB%98%E8%AE%A4%E5%80%BC)
+    - [其他的选项类型，取反选项，以及可选参数的选项](#%E5%85%B6%E4%BB%96%E7%9A%84%E9%80%89%E9%A1%B9%E7%B1%BB%E5%9E%8B%EF%BC%8C%E5%8F%96%E5%8F%8D%E9%80%89%E9%A1%B9%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%8F%AF%E9%80%89%E5%8F%82%E6%95%B0%E7%9A%84%E9%80%89%E9%A1%B9)
+    - [必填选项](#%e5%bf%85%e5%a1%ab%e9%80%89%e9%a1%b9)
+    - [变长参数选项](#%e5%8f%98%e9%95%bf%e5%8f%82%e6%95%b0%e9%80%89%e9%a1%b9)
     - [版本选项](#%e7%89%88%e6%9c%ac%e9%80%89%e9%a1%b9)
-  - [Commands](#commands)
-    - [指定参数语法](#%e6%8c%87%e5%ae%9a%e5%8f%82%e6%95%b0%e8%af%ad%e6%b3%95)
-    - [操作处理程序(Action handler) (子)命令](#%e6%93%8d%e4%bd%9c%e5%a4%84%e7%90%86%e7%a8%8b%e5%ba%8faction-handler-%e5%ad%90%e5%91%bd%e4%bb%a4)
-    - [Git 风格的子命令](#git-%e9%a3%8e%e6%a0%bc%e7%9a%84%e5%ad%90%e5%91%bd%e4%bb%a4)
-  - [自动化帮助信息 --help](#%e8%87%aa%e5%8a%a8%e5%8c%96%e5%b8%ae%e5%8a%a9%e4%bf%a1%e6%81%af---help)
+    - [其他选项配置](#%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9%E9%85%8D%E7%BD%AE)
+    - [自定义选项处理](#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%89%E9%A1%B9%E5%A4%84%E7%90%86)
+  - [命令](#%e5%91%bd%e4%bb%a4)
+    - [命令参数](#%E8%AE%BE%E7%BD%AE%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0)
+      - [其他参数配置](#%E5%85%B6%E4%BB%96%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE)
+      - [自定义参数处理](#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86)
+    - [处理函数](#%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0)
+    - [独立的可执行（子）命令](#%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%8F%AF%E6%89%A7%E8%A1%8C%EF%BC%88%E5%AD%90%EF%BC%89%E5%91%BD%E4%BB%A4)
+    - [生命周期钩子](#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90)
+  - [自动化帮助信息](#%e8%87%aa%e5%8a%a8%e5%8c%96%e5%b8%ae%e5%8a%a9%e4%bf%a1%e6%81%af)
     - [自定义帮助](#%e8%87%aa%e5%ae%9a%e4%b9%89%e5%b8%ae%e5%8a%a9)
+    - [在出错后展示帮助信息](#%E5%9C%A8%E5%87%BA%E9%94%99%E5%90%8E%E5%B1%95%E7%A4%BA%E5%B8%AE%E5%8A%A9%E4%BF%A1%E6%81%AF)
+    - [使用代码展示帮助信息](#%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E5%B1%95%E7%A4%BA%E5%B8%AE%E5%8A%A9%E4%BF%A1%E6%81%AF)
     - [.usage 和 .name](#usage-%e5%92%8c-name)
-    - [.outputHelp(cb)](#outputhelpcb)
     - [.helpOption(flags, description)](#helpoptionflags-description)
-    - [.help(cb)](#helpcb)
+    - [.addHelpCommand()](#addhelpcommand)
+    - [其他帮助配置](#%E5%85%B6%E4%BB%96%E5%B8%AE%E5%8A%A9%E9%85%8D%E7%BD%AE)
   - [自定义事件监听](#%e8%87%aa%e5%ae%9a%e4%b9%89%e4%ba%8b%e4%bb%b6%e7%9b%91%e5%90%ac)
   - [零碎知识](#%e9%9b%b6%e7%a2%8e%e7%9f%a5%e8%af%86)
-    - [避免选项命名冲突](#避免选项命名冲突)
+    - [.parse() 和 .parseAsync()](#parse-%e5%92%8c-parseasync)
+    - [解析配置](#%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE)
+    - [作为属性的遗留选项](#%E4%BD%9C%E4%B8%BA%E5%B1%9E%E6%80%A7%E7%9A%84%E9%81%97%E7%95%99%E9%80%89%E9%A1%B9)
     - [TypeScript](#typescript)
-    - [Node 选项例如 --harmony](#node-%e9%80%89%e9%a1%b9%e4%be%8b%e5%a6%82---harmony)
-    - [Node 调试](#node-%e8%b0%83%e8%af%95)
-    - [重载退出(exit)处理](#%e9%87%8d%e8%bd%bd%e9%80%80%e5%87%baexit%e5%a4%84%e7%90%86)
+    - [createCommand()](#createCommand)
+    - [Node 选项，如 --harmony](#node-%E9%80%89%E9%A1%B9%EF%BC%8C%E5%A6%82---harmony)
+    - [调试子命令](#%e8%b0%83%e8%af%95%e5%ad%90%e5%91%bd%e4%bb%a4)
+    - [重写退出和输出](#%E9%87%8D%E5%86%99%E9%80%80%E5%87%BA%E5%92%8C%E8%BE%93%E5%87%BA)
+    - [其他文档](#%E5%85%B6%E4%BB%96%E6%96%87%E6%A1%A3)
   - [例子](#%e4%be%8b%e5%ad%90)
-  - [许可证](#%e8%ae%b8%e5%8f%af%e8%af%81)
   - [支持](#%e6%94%af%e6%8c%81)
-    - [企业使用Commander](#企业使用Commander)
+    - [企业使用 Commander](#%e4%bc%81%e4%b8%9a%e4%bd%bf%e7%94%a8-commander)
+
+关于本文档中使用的术语，请见[术语表](./docs/zh-CN/%E6%9C%AF%E8%AF%AD%E8%A1%A8.md)
 
 ## 安装
 
@@ -47,38 +59,61 @@
 npm install commander
 ```
 
-## 声明program变量
+## 声明 program 变量
 
-Commander为了方便快速编程导出了一个全局对象。为简洁起见，本README中的示例中使用了它。
+为简化使用，Commander 提供了一个全局对象。本文档的示例代码均按此方法使用：
 
 ```js
-const program = require('commander');
+const { program } = require('commander');
 program.version('0.0.1');
 ```
 
-对于可能以多种方式使用commander的大型程序，包括单元测试，最好创建一个本地Command对象来使用。
+如果程序较为复杂，用户需要以多种方式来使用 Commander，如单元测试等。创建本地`Command`对象是一种更好的方式：
 
 ```js
-const commander = require('commander');
-const program = new commander.Command();
+const { Command } = require('commander');
+const program = new Command();
 program.version('0.0.1');
+```
+
+要在 ECMAScript 模块中使用命名导入，可从`commander/esm.mjs`中导入。
+
+```js
+// index.mjs
+import { Command } from 'commander/esm.mjs';
+const program = new Command();
+```
+
+TypeScript 用法：
+
+```ts
+// index.ts
+import { Command } from 'commander';
+const program = new Command();
 ```
 
 ## 选项
 
-`.option()` 方法用来定义带选项的 commander，同时也用于这些选项的文档。每个选项可以有一个短标识(单个字符)和一个长名字，它们之间用逗号或空格分开。
+Commander 使用`.option()`方法来定义选项，同时可以附加选项的简介。每个选项可以定义一个短选项名称（-后面接单个字符）和一个长选项名称（--后面接一个或多个单词），使用逗号、空格或`|`分隔。
 
- 选项会被放到 Commander 对象的属性上，多词选项如"--template-engine"会被转为驼峰法`program.templateEngine`。多个短标识可以组合为一个参数，如`-a -b -c`等价于`-abc`。
+解析后的选项可以通过`Command`对象上的`.opts()`方法获取，同时会被传递给命令处理函数。可以使用`.getOptionValue()`和`.setOptionValue()`操作单个选项的值。
 
- 另请参看可选的新功能 [避免命名冲突](#避免选项命名冲突).
+对于多个单词的长选项，选项名会转为驼峰命名法（camel-case），例如`--template-engine`选项可通过`program.opts().templateEngine`获取。
 
-### 常用选项类型，boolean和值
+多个短选项可以合并简写，其中最后一个选项可以附加参数。
+例如，`-a -b -p 80`也可以写为`-ab -p80`，甚至进一步简化为`-abp80`。
 
-最常用的两个选项类型是boolean(选项后面不跟值)和选项跟一个值（使用尖括号声明）。除非在命令行中指定，否则两者都是`undefined`。
+`--`可以标记选项的结束，后续的参数均不会被命令解释，可以正常使用。
 
- ```js
-const program = require('commander');
+默认情况下，选项在命令行中的顺序不固定，一个选项可以在其他参数之前或之后指定。
 
+### 常用选项类型，boolean 型选项和带参数选项
+
+有两种最常用的选项，一类是 boolean 型选项，选项无需配置参数，另一类选项则可以设置参数（使用尖括号声明在该选项后，如`--expect <value>`）。如果在命令行中不指定具体的选项及参数，则会被定义为`undefined`。
+
+示例代码：[options-common.js](./examples/options-common.js)
+
+```js
 program
   .option('-d, --debug', 'output extra debugging')
   .option('-s, --small', 'small pizza size')
@@ -86,19 +121,17 @@ program
 
 program.parse(process.argv);
 
-if (program.debug) console.log(program.opts());
+const options = program.opts();
+if (options.debug) console.log(options);
 console.log('pizza details:');
-if (program.small) console.log('- small pizza size');
-if (program.pizzaType) console.log(`- ${program.pizzaType}`);
- ```
+if (options.small) console.log('- small pizza size');
+if (options.pizzaType) console.log(`- ${options.pizzaType}`);
+```
 
 ```bash
-$ pizza-options -d
-{ debug: true, small: undefined, pizzaType: undefined }
-pizza details:
 $ pizza-options -p
 error: option '-p, --pizza-type <type>' argument missing
-$ pizza-options -ds -p vegetarian
+$ pizza-options -d -s -p vegetarian
 { debug: true, small: true, pizzaType: 'vegetarian' }
 pizza details:
 - small pizza size
@@ -108,21 +141,21 @@ pizza details:
 - cheese
 ```
 
-`program.parse(arguments)`会处理参数，没有被使用的选项会被存放在`program.args`数组中。
+通过`program.parse(arguments)`方法处理参数，没有被使用的选项会存放在`program.args`数组中。该方法的参数是可选的，默认值为`process.argv`。
 
-### 默认选项值
+### 选项的默认值
 
-可以为选项设置一个默认值。
+选项可以设置一个默认值。
+
+示例代码：[options-defaults.js](./examples/options-defaults.js)
 
 ```js
-const program = require('commander');
-
 program
   .option('-c, --cheese <type>', 'add the specified type of cheese', 'blue');
 
-program.parse(process.argv);
+program.parse();
 
-console.log(`cheese: ${program.cheese}`);
+console.log(`cheese: ${program.opts().cheese}`);
 ```
 
 ```bash
@@ -132,24 +165,24 @@ $ pizza-options --cheese stilton
 cheese: stilton
 ```
 
-### 其他选项类型，可忽略的布尔值和标志值
+### 其他的选项类型，取反选项，以及可选参数的选项
 
-选项的值为boolean类型时，可以在其长名字前加`no-`规定这个选项值为false。
-单独定义同样使选项默认为真。
+可以定义一个以`no-`开头的 boolean 型长选项。在命令行中使用该选项时，会将对应选项的值置为`false`。当只定义了带`no-`的选项，未定义对应不带`no-`的选项时，该选项的默认值会被置为`true`。
 
-如果你先定义了`--foo`，再加上`--no-foo`并不会改变它本来的默认值。你可以为一个boolean类型的标识(flag)指定一个默认的布尔值，从命令行里可以重写它的值。
+如果已经定义了`--foo`，那么再定义`--no-foo`并不会改变它本来的默认值。可以为一个 boolean 类型的选项指定一个默认的布尔值，在命令行里可以重写它的值。
+
+示例代码：[options-negatable.js](./examples/options-negatable.js)
 
 ```js
-const program = require('commander');
-
 program
   .option('--no-sauce', 'Remove sauce')
   .option('--cheese <flavour>', 'cheese flavour', 'mozzarella')
   .option('--no-cheese', 'plain with no cheese')
-  .parse(process.argv);
+  .parse();
 
-const sauceStr = program.sauce ? 'sauce' : 'no sauce';
-const cheeseStr = (program.cheese === false) ? 'no cheese' : `${program.cheese} cheese`;
+const options = program.opts();
+const sauceStr = options.sauce ? 'sauce' : 'no sauce';
+const cheeseStr = (options.cheese === false) ? 'no cheese' : `${options.cheese} cheese`;
 console.log(`You ordered a pizza with ${sauceStr} and ${cheeseStr}`);
 ```
 
@@ -164,19 +197,20 @@ $ pizza-options --no-sauce --no-cheese
 You ordered a pizza with no sauce and no cheese
 ```
 
-你可以指定一个用作标志的选项，它可以接受值（使用方括号声明，即传值不是必须的）。
+选项的参数使用方括号声明表示参数是可选参数（如`--optional [value]`）。该选项在不带参数时可用作 boolean 选项，在带有参数时则从参数中得到值。
+
+示例代码：[options-boolean-or-value.js](./examples/options-boolean-or-value.js)
 
 ```js
-const program = require('commander');
-
 program
   .option('-c, --cheese [type]', 'Add cheese with optional type');
 
 program.parse(process.argv);
 
-if (program.cheese === undefined) console.log('no cheese');
-else if (program.cheese === true) console.log('add cheese');
-else console.log(`add cheese type ${program.cheese}`);
+const options = program.opts();
+if (options.cheese === undefined) console.log('no cheese');
+else if (options.cheese === true) console.log('add cheese');
+else console.log(`add cheese type ${options.cheese}`);
 ```
 
 ```bash
@@ -188,20 +222,119 @@ $ pizza-options --cheese mozzarella
 add cheese type mozzarella
 ```
 
-### 自定义选项处理
+关于可能有歧义的用例，请见[可变参数的选项](./docs/zh-CN/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E7%9A%84%E9%80%89%E9%A1%B9.md)。
 
-你可以指定一个函数来处理选项的值，接收两个参数：用户传入的值、上一个值(previous value)，它会返回新的选项值。
+### 必填选项
 
-你可以将选项值强制转换为所需类型，或累积值，或完全自定义处理。
+通过`.requiredOption()`方法可以设置选项为必填。必填选项要么设有默认值，要么必须在命令行中输入，对应的属性字段在解析时必定会有赋值。该方法其余参数与`.option()`一致。
 
-你可以在函数后面指定选项的默认或初始值。
+示例代码：[options-required.js](./examples/options-required.js)
 
 ```js
-const program = require('commander');
+program
+  .requiredOption('-c, --cheese <type>', 'pizza must have cheese');
 
+program.parse();
+```
+
+```bash
+$ pizza
+error: required option '-c, --cheese <type>' not specified
+```
+
+### 变长参数选项
+
+定义选项时，可以通过使用`...`来设置参数为可变长参数。在命令行中，用户可以输入多个参数，解析后会以数组形式存储在对应属性字段中。在输入下一个选项前（`-`或`--`开头），用户输入的指令均会被视作变长参数。与普通参数一样的是，可以通过`--`标记当前命令的结束。
+
+示例代码：[options-variadic.js](./examples/options-variadic.js)
+
+```js
+program
+  .option('-n, --number <numbers...>', 'specify numbers')
+  .option('-l, --letter [letters...]', 'specify letters');
+
+program.parse();
+
+console.log('Options: ', program.opts());
+console.log('Remaining arguments: ', program.args);
+```
+
+```bash
+$ collect -n 1 2 3 --letter a b c
+Options:  { number: [ '1', '2', '3' ], letter: [ 'a', 'b', 'c' ] }
+Remaining arguments:  []
+$ collect --letter=A -n80 operand
+Options:  { number: [ '80' ], letter: [ 'A' ] }
+Remaining arguments:  [ 'operand' ]
+$ collect --letter -n 1 -n 2 3 -- operand
+Options:  { number: [ '1', '2', '3' ], letter: true }
+Remaining arguments:  [ 'operand' ]
+```
+关于可能有歧义的用例，请见[可变参数的选项](./docs/zh-CN/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E7%9A%84%E9%80%89%E9%A1%B9.md)。
+
+### 版本选项
+
+`.version()`方法可以设置版本，其默认选项为`-V`和`--version`，设置了版本后，命令行会输出当前的版本号。
+
+```js
+program.version('0.0.1');
+```
+
+```bash
+$ ./examples/pizza -V
+0.0.1
+```
+
+版本选项也支持自定义设置选项名称，可以在`.version()`方法里再传递一些参数（长选项名称、描述信息），用法与`.option()`方法类似。
+
+```bash
+program.version('0.0.1', '-v, --vers', 'output the current version');
+```
+
+### 其他选项配置
+
+大多数情况下，选项均可通过`.option()`方法添加。但对某些不常见的用例，也可以直接构造`Option`对象，对选项进行更详尽的配置。
+
+示例代码：[options-extra.js](./examples/options-extra.js)
+
+```js
+program
+  .addOption(new Option('-s, --secret').hideHelp())
+  .addOption(new Option('-t, --timeout <delay>', 'timeout in seconds').default(60, 'one minute'))
+  .addOption(new Option('-d, --drink <size>', 'drink size').choices(['small', 'medium', 'large']));
+```
+
+```bash
+$ extra --help
+Usage: help [options]
+
+Options:
+  -t, --timeout <delay>  timeout in seconds (default: one minute)
+  -d, --drink <size>     drink cup size (choices: "small", "medium", "large")
+  -h, --help             display help for command
+
+$ extra --drink huge
+error: option '-d, --drink <size>' argument 'huge' is invalid. Allowed choices are small, medium, large.
+```
+
+### 自定义选项处理
+
+选项的参数可以通过自定义函数来处理，该函数接收两个参数，即用户新输入的参数值和当前已有的参数值（即上一次调用自定义处理函数后的返回值），返回新的选项参数值。
+
+自定义函数适用场景包括参数类型转换，参数暂存，或者其他自定义处理的场景。
+
+可以在自定义函数的后面设置选项参数的默认值或初始值（例如参数用列表暂存时需要设置一个初始空列表)。
+
+示例代码：[options-custom-processing.js](./examples/options-custom-processing.js)
+
+```js
 function myParseInt(value, dummyPrevious) {
-  // parseInt takes a string and an optional radix
-  return parseInt(value);
+  // parseInt 参数为字符串和进制数
+  const parsedValue = parseInt(value, 10);
+  if (isNaN(parsedValue)) {
+    throw new commander.InvalidArgumentError('Not a number.');
+  }
+  return parsedValue;
 }
 
 function increaseVerbosity(dummyValue, previous) {
@@ -224,13 +357,14 @@ program
   .option('-l, --list <items>', 'comma separated list', commaSeparatedList)
 ;
 
-program.parse(process.argv);
+program.parse();
 
-if (program.float !== undefined) console.log(`float: ${program.float}`);
-if (program.integer !== undefined) console.log(`integer: ${program.integer}`);
-if (program.verbose > 0) console.log(`verbosity: ${program.verbose}`);
-if (program.collect.length > 0) console.log(program.collect);
-if (program.list !== undefined) console.log(program.list);
+const options = program.opts();
+if (options.float !== undefined) console.log(`float: ${options.float}`);
+if (options.integer !== undefined) console.log(`integer: ${options.integer}`);
+if (options.verbose > 0) console.log(`verbosity: ${options.verbose}`);
+if (options.collect.length > 0) console.log(options.collect);
+if (options.list !== undefined) console.log(options.list);
 ```
 
 ```bash
@@ -246,53 +380,19 @@ $ custom --list x,y,z
 [ 'x', 'y', 'z' ]
 ```
 
-### 必需的选项
+## 命令
 
-你可以使用`.requiredOption`指定一个必需的(强制性的)选项，这样的选项在命令行的命令中必须被给出，除非它拥有一个默认的值。另外，这个方法在格式上和使用`.option`一样采用标志和说明，以及可选的默认值或自定义处理。
+通过`.command()`或`.addCommand()`可以配置命令，有两种实现方式：为命令绑定处理函数，或者将命令单独写成一个可执行文件（详述见后文）。子命令支持嵌套（[示例代码](./examples/nestedCommands.js)）。
 
-```js
-const program = require('commander');
+`.command()`的第一个参数为命令名称。命令参数可以跟在名称后面，也可以用`.argument()`单独指定。参数可为必选的（尖括号表示）、可选的（方括号表示）或变长参数（点号表示，如果使用，只能是最后一个参数）。
 
-program
-  .requiredOption('-c, --cheese <type>', 'pizza must have cheese');
+使用`.addCommand()`向`program`增加配置好的子命令。
 
-program.parse(process.argv);
-```
-
-```
-$ pizza
-error: required option '-c, --cheese <type>' not specified
-```
-
-### 版本选项
-
-`version`方法会处理显示版本命令，默认选项标识为`-V`和`--version`，当存在时会打印版本号并退出。
+例如:
 
 ```js
-program.version('0.0.1');
-```
-
-```bash
-$ ./examples/pizza -V
-0.0.1
-```
-
-你可以自定义标识，通过给`version`方法再传递一个参数，语法与`option`方法一致。版本标识名字可以是任意的，但是必须要有长名字。
-
-```bash
-program.version('0.0.1', '-v, --vers', 'output the current version');
-```
-
-## Commands
-
-你可以使用 `.command` 为你的最高层命令指定子命令。
-这里我们有两种方法可以实现：为命令绑定一个操作处理程序(action handler)，或者将命令单独写成一个可执行文件(稍后我们会详细讨论)。在 `.command` 的第一个参数你可以指定命令的名字以及任何参数。参数可以是 `<required>`(必须的) or `[optional]`(可选的) , 并且最后一个参数也可以是 `variadic...`(可变的).
-
-For example:
-
-```js
-// 通过绑定操作处理程序实现命令 (这里description的定义和 `.command` 是分开的)
-// 返回新生成的命令(即该子命令)以供继续配置
+// 通过绑定处理函数实现命令（这里的指令描述为放在`.command`中）
+// 返回新生成的命令（即该子命令）以供继续配置
 program
   .command('clone <source> [destination]')
   .description('clone a repository into a newly created directory')
@@ -300,79 +400,114 @@ program
     console.log('clone command called');
   });
 
-// 通过单独分离的可执行文件实现命令 (注意这里description是作为 `.command` 的第二个参数)
+// 通过独立的的可执行文件实现命令 (注意这里指令描述是作为`.command`的第二个参数)
 // 返回最顶层的命令以供继续添加子命令
 program
   .command('start <service>', 'start named service')
   .command('stop [service]', 'stop named service, or all if no name supplied');
+
+// 分别装配命令
+// 返回最顶层的命令以供继续添加子命令
+program
+  .addCommand(build.makeBuildCommand());
 ```
 
-### 指定参数语法
+使用`.command()`和`addCommand()`来指定选项的相关设置。当设置`hidden: true`时，该命令不会打印在帮助信息里。当设置`isDefault: true`时，若没有指定其他子命令，则会默认执行这个命令（[样例](./examples/defaultCommand.js)）。
 
-你可以通过使用 `.arguments` 来为最顶级命令指定参数，对于子命令来说参数都包括在 `.command` 调用之中了。尖括号(e.g. `<required>`)意味着必须的输入，而方括号(e.g. `[optional]`)则是代表了可选的输入
+### 命令参数
+
+如上所述，字命令的参数可以通过`.command()`指定。对于有独立可执行文件的子命令来书，参数只能以这种方法指定。而对其他子命令，参数也可用以下方法。
+
+在`Command`对象上使用`.argument()`来按次序指定命令参数。该方法接受参数名称和参数描述。参数可为必选的（尖括号表示，例如`<required>`）或可选的（方括号表示，例如`[optional]`）。
+
+示例代码：[argument.js](./examples/argument.js)
 
 ```js
-const program = require('commander');
-
 program
   .version('0.1.0')
-  .arguments('<cmd> [env]')
-  .action(function (cmd, env) {
-    cmdValue = cmd;
-    envValue = env;
+  .argument('<username>', 'user to login')
+  .argument('[password]', 'password for user, if required', 'no password given')
+  .action((username, password) => {
+    console.log('username:', username);
+    console.log('password:', password);
   });
-
-program.parse(process.argv);
-
-if (typeof cmdValue === 'undefined') {
-  console.error('no command given!');
-  process.exit(1);
-}
-console.log('command:', cmdValue);
-console.log('environment:', envValue || "no environment given");
 ```
 
-一个命令有且仅有最后一个参数是可变的，你需要在参数名后加上 `...` 来使它可变，例如
+在参数名后加上`...`来声明可变参数，且只有最后一个参数支持这种用法。可变参数会以数组的形式传递给处理函数。例如：
 
 ```js
-const program = require('commander');
-
 program
   .version('0.1.0')
-  .command('rmdir <dir> [otherDirs...]')
-  .action(function (dir, otherDirs) {
-    console.log('rmdir %s', dir);
-    if (otherDirs) {
-      otherDirs.forEach(function (oDir) {
-        console.log('rmdir %s', oDir);
-      });
-    }
+  .command('rmdir')
+  .argument('<dirs...>')
+  .action(function (dirs) {
+    dirs.forEach((dir) => {
+      console.log('rmdir %s', dir);
+    });
   });
-
-program.parse(process.argv);
 ```
 
-可变参数的值以 `数组` 的形式传递给操作处理程序。(这点同样适用于 `program.args` )
-
-### 操作处理程序(Action handler) (子)命令
-
-你可以使用操作处理程序为一个命令增加选项options。
-操作处理程序会接收每一个你声明的参数的变量，和一个额外的参数——这个命令对象自己。这个命令的参数包括添加的命令特定选项的值。
+有一种便捷方式可以一次性指定多个参数，但不包含参数描述：
 
 ```js
-const program = require('commander');
-
 program
-  .command('rm <dir>')
-  .option('-r, --recursive', 'Remove recursively')
-  .action(function (dir, cmdObj) {
-    console.log('remove ' + dir + (cmdObj.recursive ? ' recursively' : ''))
+  .arguments('<username> <password>');
+```
+
+#### 其他参数配置
+
+有少数附加功能可以直接构造`Argument`对象，对参数进行更详尽的配置。
+
+示例代码：[arguments-extra.js](./examples/arguments-extra.js)
+
+```js
+program
+  .addArgument(new commander.Argument('<drink-size>', 'drink cup size').choices(['small', 'medium', 'large']))
+  .addArgument(new commander.Argument('[timeout]', 'timeout in seconds').default(60, 'one minute'))
+```
+
+#### 自定义参数处理
+
+选项的参数可以通过自定义函数来处理（与处理选项参数时类似），该函数接收两个参数：用户新输入的参数值和当前已有的参数值（即上一次调用自定义处理函数后的返回值），返回新的命令参数值。
+
+处理后的参数值会传递给命令处理函数，同时可通过`.processedArgs`获取。
+
+可以在自定义函数的后面设置命令参数的默认值或初始值。
+
+示例代码：[arguments-custom-processing.js](./examples/arguments-custom-processing.js)
+
+```js
+program
+  .command('add')
+  .argument('<first>', 'integer argument', myParseInt)
+  .argument('[second]', 'integer argument', myParseInt, 1000)
+  .action((first, second) => {
+    console.log(`${first} + ${second} = ${first + second}`);
   })
-
-program.parse(process.argv)
+;
 ```
 
-你可以自行实现一个`async`操作处理程序，同时调用`.parseAsync`代替`.parse`。
+### 处理函数
+
+命令处理函数的参数，为该命令声明的所有参数，除此之外还会附加两个额外参数：一个是解析出的选项，另一个则是该命令对象自身。
+
+示例代码：[thank.js](./examples/thank.js)
+
+```js
+program
+  .argument('<name>')
+  .option('-t, --title <honorific>', 'title to use before name')
+  .option('-d, --debug', 'display some debugging')
+  .action((name, options, command) => {
+    if (options.debug) {
+      console.error('Called %s with options %o', command.name(), options);
+    }
+    const title = options.title ? `${options.title} ` : '';
+    console.log(`Thank-you ${title}${name}`);
+  });
+```
+
+处理函数支持`async`，相应的，需要使用`.parseAsync`代替`.parse`。
 
 ```js
 async function run() { /* 在这里编写代码 */ }
@@ -385,109 +520,157 @@ async function main() {
 }
 ```
 
+使用命令时，所给的选项和命令参数会被验证是否有效。凡是有未知的选项，或缺少所需的命令参数，都会报错。
+如要允许使用未知的选项，可以调用`.allowUnknownOption()`。默认情况下，传入过多的参数并不报错，但也可以通过调用`.allowExcessArguments(false)`来启用过多参数的报错。
 
-当一个命令在命令行上被使用时，它的选项必须是合法的。使用任何未知的选项会报错。然而如果一个基于操作的命令没有定义任何操作，那么这些选项是不合法的。
+### 独立的可执行（子）命令
 
-定义配置选项可以随着调用 `.command()` 传递。
-为 `opts.noHelp` 指定 `true` 则该命令不会出现生成的帮助输出里。
+当`.command()`带有描述参数时，就意味着使用独立的可执行文件作为子命令。
+Commander 将会尝试在入口脚本（例如`./examples/pm`）的目录中搜索`program-command`形式的可执行文件，例如`pm-install`、`pm-search`。通过配置选项`executableFile`可以自定义名字。
 
-### Git 风格的子命令
+你可以在可执行文件里处理（子）命令的选项，而不必在顶层声明它们。
 
-当 `.command()` 带有描述参数时，不能采用 `.action(callback)` 来处理子命令，否则会出错。这告诉 commander，你将采用单独的可执行文件作为子命令，就像 `git(1)` 和其他流行的工具一样。
-Commander 将会尝试在入口脚本（例如 `./examples/pm`）的目录中搜索 `program-command` 形式的可执行文件，例如 `pm-install`, `pm-search`。
-你可以使用配置选项 `executableFile` 来指定一个自定义的名字
-
-你可以在可执行文件里处理可执行(子)命令的选项，而不必在顶层声明它们
+示例代码：[pm](./examples/pm)
 
 ```js
-// file: ./examples/pm
-const program = require('commander');
-
 program
   .version('0.1.0')
   .command('install [name]', 'install one or more packages')
   .command('search [query]', 'search with optional query')
-  .command('update', 'update installed packages', {executableFile: 'myUpdateSubCommand'})
-  .command('list', 'list packages installed', {isDefault: true})
-  .parse(process.argv);
+  .command('update', 'update installed packages', { executableFile: 'myUpdateSubCommand' })
+  .command('list', 'list packages installed', { isDefault: true });
+
+program.parse(process.argv);
 ```
 
-定义配置选项可以随着调用 `.command()` 传递。为 `opts.noHelp` 指定 `true` 则该命令不会出现生成的帮助输出里。指定 `opts.isDefault` 为 `true` 将会在没有其它子命令指定的情况下，执行该子命令。
+如果该命令需要支持全局安装，请确保有对应的权限，例如`755`。
 
-使用 `executableFile` 指定一个名字会覆盖默认构造的名称
+### 生命周期钩子
 
-如果你打算全局安装该命令，请确保可执行文件有对应的权限，例如 `755`。
+可以在命令的生命周期事件上设置回调函数。
 
-## 自动化帮助信息 --help
+示例代码：[hook.js](./examples/hook.js)
 
- 帮助信息是 commander 基于你的程序自动生成的，下面是 `--help` 生成的帮助信息：
+```js
+program
+  .option('-t, --trace', 'display trace statements for commands')
+  .hook('preAction', (thisCommand, actionCommand) => {
+    if (thisCommand.opts().trace) {
+      console.log(`About to call action handler for subcommand: ${actionCommand.name()}`);
+      console.log('arguments: %O', actionCommand.args);
+      console.log('options: %o', actionCommand.opts());
+    }
+  });
+```
+
+钩子函数支持`async`，相应的，需要使用`.parseAsync`代替`.parse`。一个事件上可以添加多个钩子。
+
+支持的事件有：
+
+- `preAction`：在本命令或其子命令的处理函数执行前
+- `postAction`：在本命令或其子命令的处理函数执行后
+
+钩子函数的参数为添加上钩子的命令，及实际执行的命令。
+
+## 自动化帮助信息
+
+帮助信息是 Commander 基于你的程序自动生成的，默认的帮助选项是`-h,--help`。
+
+示例代码：[pizza](./examples/pizza)
 
 ```bash
-$ ./examples/pizza --help
+$ node ./examples/pizza --help
 Usage: pizza [options]
 
-An application for pizzas ordering
+An application for pizza ordering
 
 Options:
-  -V, --version        output the version number
   -p, --peppers        Add peppers
-  -P, --pineapple      Add pineapple
-  -b, --bbq            Add bbq sauce
   -c, --cheese <type>  Add the specified type of cheese (default: "marble")
   -C, --no-cheese      You do not want any cheese
-  -h, --help           output usage information
+  -h, --help           display help for command
+```
+
+如果你的命令中包含了子命令，会默认添加`help`命令，它可以单独使用，也可以与子命令一起使用来提示更多帮助信息。用法与`shell`程序类似：
+
+```bash
+shell help
+shell --help
+
+shell help spawn
+shell spawn --help
 ```
 
 ### 自定义帮助
 
- 你可以通过监听 `--help` 来控制 `-h, --help` 显示任何信息。一旦调用完成， Commander 将自动退出，你的程序的其余部分不会展示。例如在下面的 “stuff” 将不会在执行 `--help` 时输出。
+可以添加额外的帮助信息，与内建的帮助一同展示。
+
+示例代码：[custom-help](./examples/custom-help)
 
 ```js
-#!/usr/bin/env node
-
-const program = require('commander');
-
 program
-  .version('0.0.1')
-  .option('-f, --foo', 'enable some foo')
-  .option('-b, --bar', 'enable some bar')
-  .option('-B, --baz', 'enable some baz');
+  .option('-f, --foo', 'enable some foo');
 
-// must be before .parse() since
-// node's emit() is immediate
+program.addHelpText('after', `
 
-program.on('--help', function(){
-  console.log('');
-  console.log('Examples:');
-  console.log('  $ custom-help --help');
-  console.log('  $ custom-help -h');
-});
-
-program.parse(process.argv);
-
-console.log('stuff');
+Example call:
+  $ custom-help --help`);
 ```
 
-下列帮助信息是运行 `node script-name.js -h` or `node script-name.js --help` 时输出的:
+将会输出以下的帮助信息：
 
 ```Text
 Usage: custom-help [options]
 
 Options:
-  -h, --help     output usage information
-  -V, --version  output the version number
-  -f, --foo      enable some foo
-  -b, --bar      enable some bar
-  -B, --baz      enable some baz
+  -f, --foo   enable some foo
+  -h, --help  display help for command
 
-Examples:
+Example call:
   $ custom-help --help
-  $ custom-help -h
 ```
+
+位置参数对应的展示方式如下：
+
+- `beforeAll`：作为全局标头栏展示
+- `before`：在内建帮助信息之前展示
+- `after`：在内建帮助信息之后展示
+- `afterAll`：作为全局末尾栏展示
+
+`beforeAll`和`afterAll`两个参数作用于命令及其所有的子命令。
+
+第二个参数可以是一个字符串，也可以是一个返回字符串的函数。对后者而言，为便于使用，该函数可以接受一个上下文对象，它有如下属性：
+
+- `error`：boolean 值，代表该帮助信息是否由于不当使用而展示
+- `command`：代表展示该帮助信息的`Command`对象
+
+### 在出错后展示帮助信息
+
+默认情况下，出现命令用法错误时只会显示错误信息。可以选择在出错后展示完整的帮助或自定义的帮助信息。
+
+```js
+program.showHelpAfterError();
+// 或者
+program.showHelpAfterError('(add --help for additional information)');
+```
+
+```sh
+$ pizza --unknown
+error: unknown option '--unknown'
+(add --help for additional information)
+```
+
+### 使用代码展示帮助信息
+
+`.help()`：展示帮助信息并退出。可以通过传入`{ error: true }`来让帮助信息从 stderr 输出，并以代表错误的状态码退出程序。
+
+`.outputHelp()`：只展示帮助信息，不退出程序。传入`{ error: true }`可以让帮助信息从 stderr 输出。
+
+`.helpInformation()`：得到字符串形式的内建的帮助信息，以便用于自定义的处理及展示。
 
 ### .usage 和 .name
 
-这两个选项让你可以自定义在帮助信息第一行中显示的命令使用描述(description)，并且描述是从（完整的）命令参数中推导出来的。例如：
+通过这两个选项可以修改帮助信息的首行提示，`name`属性也可以从参数中推导出来。例如：
 
 ```js
 program
@@ -495,136 +678,176 @@ program
   .usage("[global options] command")
 ```
 
-帮助信息会以此开头：
+帮助信息开头如下：
 
 ```Text
 Usage: my-command [global options] command
 ```
 
-### .outputHelp(cb)
-
-输出帮助信息的同时不退出。
-可选的回调可在显示帮助文本后处理。
-如果你想显示默认的帮助（例如，如果没有提供命令），你可以使用类似的东西：
-
-```js
-const program = require('commander');
-const colors = require('colors');
-
-program
-  .version('0.1.0')
-  .command('getstream [url]', 'get stream URL')
-  .parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-  program.outputHelp(make_red);
-}
-
-function make_red(txt) {
-  return colors.red(txt); //display the help text in red on the console
-}
-```
-
 ### .helpOption(flags, description)
 
-  重写覆盖默认的帮助标识和描述
+每一个命令都带有一个默认的帮助选项。可以重写`flags`和`description`参数。传入`false`则会禁用内建的帮助信息。
 
 ```js
 program
   .helpOption('-e, --HELP', 'read more information');
 ```
 
-### .help(cb)
+### .addHelpCommand()
 
- 输出帮助信息并立即退出。
- 可选的回调可在显示帮助文本后处理。
+如果一个命令拥有子命令，它也将有一个默认的帮助子命令。使用`.addHelpCommand()`和`.addHelpCommand(false)`可以打开或关闭默认的帮助子命令。
+
+也可以自定义名字和描述：
+
+```js
+program.addHelpCommand('assist [command]', 'show assistance');
+```
+
+### 其他帮助配置
+
+内建帮助信息通过`Help`类进行格式化。如有需要，可以使用`.configureHelp()`来更改其数据属性和方法，或使用`.createHelp()`来创建子类，从而配置`Help`类的行为。
+
+数据属性包括：
+- `helpWidth`：指明帮助信息的宽度。可在单元测试中使用。
+- `sortSubcommands`：以字母序排列子命令
+- `sortOptions`：以字母序排列选项
+
+可以得到可视化的参数列表，选项列表，以及子命令列表。列表的每个元素都具有`_term_`和`_description_`属性，并可以对其进行格式化。关于其使用方式，请参考`.formatHelp()`。
+
+示例代码：[configure-help.js](./examples/configure-help.js)
+
+```js
+program.configureHelp({
+  sortSubcommands: true,
+  subcommandTerm: (cmd) => cmd.name() // 显示名称，而非用法
+});
+```
 
 ## 自定义事件监听
 
- 你可以通过监听命令和选项来执行自定义函数。
+监听命令和选项可以执行自定义函数。
 
 ```js
-// 当有选项verbose时会执行函数
 program.on('option:verbose', function () {
-  process.env.VERBOSE = this.verbose;
+  process.env.VERBOSE = this.opts().verbose;
 });
 
-// 未知命令会报错
-program.on('command:*', function () {
-  console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
-  process.exit(1);
+program.on('command:*', function (operands) {
+  console.error(`error: unknown command '${operands[0]}'`);
+  const availableCommands = program.commands.map(cmd => cmd.name());
+  mySuggestBestMatch(operands[0], availableCommands);
+  process.exitCode = 1;
 });
 ```
 
 ## 零碎知识
 
-### 避免选项命名冲突
+### .parse() 和 .parseAsync()
 
-Commander原本和默认的行为是将选项值作为program的属性存储的，并且给操作处理程序(action handler)传递了一个将选项值作为属性存储的command对象。
-这样确实使得编程很方便，但是会带来有可能会和Command对象的属性相冲突的缺点。
+`.parse`的第一个参数是要解析的字符串数组，也可以省略参数而使用`process.argv`。
 
-这里有两种方法来改变着这样的行为，而且我们有可能在将来改变默认的行为
+如果参数遵循与 node 不同的约定，可以在第二个参数中传递`from`选项：
 
-- `storeOptionsAsProperties`: 是否将选项值作为command对象的属性来存储，亦或者分开地存储(指定 false)并使用`.opts()`来获得。
-- `passCommandToAction`: 是否把command对象传递给操作处理程序，亦或者仅仅传递这些选项(指定 false)
+- `node`：默认值，`argv[0]`是应用，`argv[1]`是要跑的脚本，后续为用户参数；
+- `electron`：`argv[1]`根据 electron 应用是否打包而变化；
+- `user`：来自用户的所有参数。
+
+例如：
 
 ```js
-// 文件: ./examples/storeOptionsAsProperties.action.js
-program
-  .storeOptionsAsProperties(false)
-  .passCommandToAction(false);
+program.parse(process.argv); // 指明，按 node 约定
+program.parse(); // 默认，自动识别 electron
+program.parse(['-f', 'filename'], { from: 'user' });
+```
 
-program
-  .name('my-program-name')
-  .option('-n,--name <name>');
+### 解析配置
 
+当默认的解析方式无法满足需要，Commander 也提供了其他的解析行为。
+
+默认情况下，程序的选项在子命令前后均可被识别。如要只允许选项出现在子命令之前，可以使用`.enablePositionalOptions()`。这样可以在命令和子命令中使用意义不同的同名选项。
+
+示例代码：[positional-options.js](./examples/positional-options.js)
+
+当启用了带顺序的选项解析，以下程序中，`-b`选项在第一行中将被解析为程序顶层的选项，而在第二行中则被解析为子命令的选项：
+
+```sh
+program -b subcommand
+program subcommand -b
+```
+
+默认情况下，选项在命令参数前后均可被识别。如要使选项仅在命令参数前被识别，可以使用`.passThroughOptions()`。这样可以把参数和跟随的选项传递给另一程序，而无需使用`--`来终止选项解析。
+如要在子命令中使用此功能，必须首先启用带顺序的选项解析。
+
+示例代码：[pass-through-options.js](./examples/pass-through-options.js)
+
+当启用此功能时，以下程序中，`--port=80`在第一行中会被解析为程序的选项，而在第二行中则会被解析为一个命令参数：
+
+```sh
+program --port=80 arg
+program arg --port=80
+```
+
+默认情况下，使用未知选项会提示错误。如要将未知选项视作普通命令参数，并继续处理其他部分，可以使用`.allowUnknownOption()`。这样可以混用已知和未知的选项。
+
+默认情况下，传入过多的命令参数并不会报错。可以使用`.allowExcessArguments(false)`来启用这一检查。
+
+### 作为属性的遗留选项
+
+在 Commander 7 以前，选项的值是作为属性存储在命令对象上的。
+这种处理方式便于实现，但缺点在于，选项可能会与`Command`的已有属性相冲突。通过使用`.storeOptionsAsProperties()`，可以恢复到这种旧的处理方式，并可以不加改动地继续运行遗留代码。
+
+```js
 program
-  .command('show')
-  .option('-a,--action <action>')
-  .action((options) => {
-    console.log(options.action);
+  .storeOptionsAsProperties()
+  .option('-d, --debug')
+  .action((commandAndOptions) => {
+    if (commandAndOptions.debug) {
+      console.error(`Called ${commandAndOptions.name()}`);
+    }
   });
-
-program.parse(process.argv);
-
-const programOptions = program.opts();
-console.log(programOptions.name);
 ```
 
 ### TypeScript
 
-包里包含 TypeScript 定义文件，但是需要你自己安装 node types。如：
-
-```bash
-npm install commander
-npm install --save-dev @types/node
-```
-
-如果你使用 `ts-node` 和 git风格子命令编写 `.ts` 文件, 你需要使用 node 来执行程序以保证正确执行子命令。如：
+如果你使用 ts-node，并有`.ts`文件作为独立可执行文件，那么需要用 node 运行你的程序以使子命令能正确调用，例如：
 
 ```bash
 node -r ts-node/register pm.ts
 ```
 
-### Node 选项例如 `--harmony`
+### createCommand()
 
-你可以采用两种方式启用 `--harmony`：
+使用这个工厂方法可以创建新命令，此时不需要使用`new`，如
 
-- 在子命令脚本中加上 `#!/usr/bin/env node --harmony`。注意一些系统版本不支持此模式。
-- 在指令调用时加上 `--harmony` 参数，例如 `node --harmony examples/pm publish`。`--harmony` 选项在开启子进程时会被保留。
+```bash
+const { createCommand } = require('commander');
+const program = createCommand();
+```
 
-### Node 调试
+`createCommand`同时也是`Command`对象的一个方法，可以创建一个新的命令（而非子命令），使用`.command()`创建子命令时内部会调用该方法，具体使用方式可参考 [custom-command-class.js](./examples/custom-command-class.js)。
 
-如果你在使用 node inspector的 `node -inspect` 等命令来[调试](https://nodejs.org/en/docs/guides/debugging-getting-started/) git风格的可执行命令，
-对于生成的子命令，inspector端口递增1。
+### Node 选项，如 --harmony
 
-### 重载退出(exit)处理
+要使用`--harmony`等选项有以下两种方式：
 
-默认情况下，当检测到错误以及打印出帮助信息或版本信息时Commander将调用`process.exit`方法。你可以重写覆盖这项操作并提供一个可选的回调。默认的实现会抛出一个`CommanderError`。
+- 在子命令脚本中加上`#!/usr/bin/env node --harmony`。注：Windows 系统不支持；
+- 调用时加上`--harmony`参数，例如`node --harmony examples/pm publish`。`--harmony`选项在开启子进程时仍会保留。
 
-重载的回调接受一个包含了 Number类型的`exitCode`、String类型的`code`和`message` 属性的`CommanderError`。除了对可执行子命令完成的异步处理之外，默认的实现方法会抛出这个错。正常情况下，打印错误信息以及帮助或版本信息不会被重载所影响，因为重载的调用在打印之后。
+### 调试子命令
 
-``` js
+一个可执行的子命令会作为单独的子进程执行。
+
+如果使用 node inspector 的`node -inspect`等命令来[调试](https://nodejs.org/en/docs/guides/debugging-getting-started/)可执行命令，对于生成的子命令，inspector 端口会递增 1。
+
+如果想使用 VSCode 调试，则需要在`launch.json`配置文件里设置`"autoAttachChildProcesses": true`。
+
+### 重写退出和输出
+
+默认情况下，在检测到错误、打印帮助信息或版本信息时 Commander 会调用`process.exit`方法。其默认实现会抛出一个`CommanderError`，可以重写该方法并提供一个回调函数（可选）。
+
+回调函数的参数为`CommanderError`，属性包括 Number 型的`exitCode`、String 型的`code`和`message`。子命令完成调用后会开始异步处理。正常情况下，打印错误信息、帮助信息或版本信息不会被重写影响，因为重写会发生在打印之后。
+
+```js
 program.exitOverride();
 
 try {
@@ -634,66 +857,109 @@ try {
 }
 ```
 
-## 例子
+Commander 默认用作命令行应用，其输出写入 stdout 和 stderr。
+对于其他应用类型，这一行为可以修改。并且可以修改错误信息的展示方式。
+
+示例代码：[configure-output.js](./examples/configure-output.js)
+
 
 ```js
-const program = require('commander');
+function errorColor(str) {
+  // 添加 ANSI 转义字符，以将文本输出为红色
+  return `\x1b[31m${str}\x1b[0m`;
+}
 
 program
-  .version('0.1.0')
-  .option('-C, --chdir <path>', 'change the working directory')
-  .option('-c, --config <path>', 'set config path. defaults to ./deploy.conf')
-  .option('-T, --no-tests', 'ignore test hook');
+  .configureOutput({
+    // 此处使输出变得容易区分
+    writeOut: (str) => process.stdout.write(`[OUT] ${str}`),
+    writeErr: (str) => process.stdout.write(`[ERR] ${str}`),
+    // 将错误高亮显示
+    outputError: (str, write) => write(errorColor(str))
+  });
+```
+
+### 其他文档
+
+请参考关于如下话题的其他文档：
+
+- [不再推荐使用的功能](./docs/zh-CN/%E4%B8%8D%E5%86%8D%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8A%9F%E8%83%BD.md)。这些功能仍受到支持，以保证向后兼容。
+- [可变参数的选项](./docs/zh-CN/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E7%9A%84%E9%80%89%E9%A1%B9.md)
+
+## 例子
+
+在只包含一个命令的程序中，无需定义处理函数。
+
+示例代码：[pizza](./examples/pizza)
+
+```js
+const { program } = require('commander');
+
+program
+  .description('An application for pizza ordering')
+  .option('-p, --peppers', 'Add peppers')
+  .option('-c, --cheese <type>', 'Add the specified type of cheese', 'marble')
+  .option('-C, --no-cheese', 'You do not want any cheese');
+
+program.parse();
+
+const options = program.opts();
+console.log('you ordered a pizza with:');
+if (options.peppers) console.log('  - peppers');
+const cheese = !options.cheese ? 'no' : options.cheese;
+console.log('  - %s cheese', cheese);
+```
+
+在包含多个命令的程序中，应为每个命令指定处理函数，或独立的可执行程序。
+
+示例代码：[deploy](./examples/deploy)
+
+```js
+const { Command } = require('commander');
+const program = new Command();
+
+program
+  .version('0.0.1')
+  .option('-c, --config <path>', 'set config path', './deploy.conf');
 
 program
   .command('setup [env]')
   .description('run setup commands for all envs')
-  .option("-s, --setup_mode [mode]", "Which setup mode to use")
-  .action(function(env, options){
-    const mode = options.setup_mode || "normal";
+  .option('-s, --setup_mode <mode>', 'Which setup mode to use', 'normal')
+  .action((env, options) => {
     env = env || 'all';
-    console.log('setup for %s env(s) with %s mode', env, mode);
+    console.log('read config from %s', program.opts().config);
+    console.log('setup for %s env(s) with %s mode', env, options.setup_mode);
   });
 
 program
-  .command('exec <cmd>')
+  .command('exec <script>')
   .alias('ex')
   .description('execute the given remote cmd')
-  .option("-e, --exec_mode <mode>", "Which exec mode to use")
-  .action(function(cmd, options){
-    console.log('exec "%s" using %s mode', cmd, options.exec_mode);
-  }).on('--help', function() {
-    console.log('');
-    console.log('Examples:');
-    console.log('');
-    console.log('  $ deploy exec sequential');
-    console.log('  $ deploy exec async');
-  });
-
-program
-  .command('*')
-  .action(function(env){
-    console.log('deploying "%s"', env);
-  });
+  .option('-e, --exec_mode <mode>', 'Which exec mode to use', 'fast')
+  .action((script, options) => {
+    console.log('read config from %s', program.opts().config);
+    console.log('exec "%s" using %s mode and config %s', script, options.exec_mode, program.opts().config);
+  }).addHelpText('after', `
+Examples:
+  $ deploy exec sequential
+  $ deploy exec async`
+  );
 
 program.parse(process.argv);
 ```
 
-更多的 [演示](https://github.com/tj/commander.js/tree/master/examples) 可以在这里找到。
-
-## 许可证
-
-[MIT](https://github.com/tj/commander.js/blob/master/LICENSE)
+更多的示例代码点击[这里](https://github.com/tj/commander.js/tree/master/examples)查看。
 
 ## 支持
 
-Commander 4.x版本现在在Node 8以及更高的版本上得到支持，尽管仍有可能在Node 6版本上工作，但是不再保证相关的测试。
-（对于Node版本低于6的情况，建议使用Commander 3.x 或 2.x版本。）
+当前版本的 Commander 在 LTS 版本的 Node 上完全支持。Node 版本应不低于v12。
+（使用更低版本 Node 的用户建议安装更低版本的 Commander。Commander 2.x 具有最广泛的支持。）
 
-主要的社区支持的免费论坛就在Github上的项目[Issues](https://github.com/tj/commander.js/issues)
+社区支持请访问项目的 [Issues](https://github.com/tj/commander.js/issues)。
 
-### 企业使用Commander
+### 企业使用 Commander
 
-作为Tidelift订阅的一部分现在可用
+作为 Tidelift 订阅的一部分。
 
-Commander和数以千计的其他包的维护者在与Tidelift合作，提供对于企业用来构筑应用的开源依赖的商业支持与维护。通过向相关依赖包的维护者支付一定费用，从而帮助企业节省时间，降低风险，改进代码运行情况。[了解更多](https://tidelift.com/subscription/pkg/npm-commander?utm_source=npm-commander&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
+Commander 和很多其他包的维护者已与 Tidelift 合作，面向企业提供开源依赖的商业支持与维护。企业可以向相关依赖包的维护者支付一定的费用，帮助企业节省时间，降低风险，改进代码运行情况。[了解更多](https://tidelift.com/subscription/pkg/npm-commander?utm_source=npm-commander&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)

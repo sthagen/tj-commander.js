@@ -6,10 +6,11 @@ Old versions receive security updates for six months.
 
 | Version | Supported                                  |
 | ------- | ------------------------------------------ |
-| 4.x     | :white_check_mark:                         |
-| 3.x     | :white_check_mark: support ends 2020-05-01 |
-| 2.x     | :white_check_mark: support ends 2020-02-03 |
-| < 2     | :x:                                        |
+| 7.x     | :white_check_mark:                         |
+| 6.x     | :white_check_mark: support ends 2021-06-30 |
+| < 6     | :x:                                        |
+
+Pull Requests for security issues will be considered for older versions back to 2.x.
 
 ## Reporting a Vulnerability
 

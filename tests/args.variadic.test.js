@@ -2,22 +2,7 @@ const commander = require('../');
 
 // Testing variadic arguments. Testing all the action arguments, but could test just variadicArg.
 
-describe('.version', () => {
-  // Optional. Use internal knowledge to suppress output to keep test output clean.
-  let consoleErrorSpy;
-
-  beforeAll(() => {
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockClear();
-  });
-
-  afterAll(() => {
-    consoleErrorSpy.mockRestore();
-  });
-
+describe('variadic argument', () => {
   test('when no extra arguments specified for program then variadic arg is empty array', () => {
     const actionMock = jest.fn();
     const program = new commander.Command();
@@ -27,7 +12,7 @@ describe('.version', () => {
 
     program.parse(['node', 'test', 'id']);
 
-    expect(actionMock).toHaveBeenCalledWith('id', [], program);
+    expect(actionMock).toHaveBeenCalledWith('id', [], program.opts(), program);
   });
 
   test('when extra arguments specified for program then variadic arg is array of values', () => {
@@ -40,7 +25,7 @@ describe('.version', () => {
 
     program.parse(['node', 'test', 'id', ...extraArguments]);
 
-    expect(actionMock).toHaveBeenCalledWith('id', extraArguments, program);
+    expect(actionMock).toHaveBeenCalledWith('id', extraArguments, program.opts(), program);
   });
 
   test('when no extra arguments specified for command then variadic arg is empty array', () => {
@@ -52,7 +37,7 @@ describe('.version', () => {
 
     program.parse(['node', 'test', 'sub']);
 
-    expect(actionMock).toHaveBeenCalledWith([], cmd);
+    expect(actionMock).toHaveBeenCalledWith([], cmd.opts(), cmd);
   });
 
   test('when extra arguments specified for command then variadic arg is array of values', () => {
@@ -65,30 +50,31 @@ describe('.version', () => {
 
     program.parse(['node', 'test', 'sub', ...extraArguments]);
 
-    expect(actionMock).toHaveBeenCalledWith(extraArguments, cmd);
+    expect(actionMock).toHaveBeenCalledWith(extraArguments, cmd.opts(), cmd);
   });
 
   test('when program variadic argument not last then error', () => {
     const program = new commander.Command();
-    program
-      .exitOverride()
-      .arguments('<variadicArg...> [optionalArg]')
-      .action(jest.fn);
 
     expect(() => {
-      program.parse(['node', 'test', 'a']);
-    }).toThrow("error: variadic arguments must be last 'variadicArg'");
+      program.arguments('<variadicArg...> [optionalArg]');
+    }).toThrow("only the last argument can be variadic 'variadicArg'");
   });
 
   test('when command variadic argument not last then error', () => {
     const program = new commander.Command();
-    program
-      .exitOverride()
-      .command('sub <variadicArg...> [optionalArg]')
-      .action(jest.fn);
 
     expect(() => {
-      program.parse(['node', 'test', 'sub', 'a']);
-    }).toThrow("error: variadic arguments must be last 'variadicArg'");
+      program.command('sub <variadicArg...> [optionalArg]');
+    }).toThrow("only the last argument can be variadic 'variadicArg'");
+  });
+
+  test('when variadic argument then usage shows variadic', () => {
+    const program = new commander.Command();
+    program
+      .name('foo')
+      .arguments('[args...]');
+
+    expect(program.usage()).toBe('[options] [args...]');
   });
 });

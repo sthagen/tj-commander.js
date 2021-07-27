@@ -2,20 +2,20 @@ const commander = require('../');
 
 // Checking for detection of unknown options, including regression tests for some past issues.
 
-describe('.version', () => {
+describe('unknownOption', () => {
   // Optional. Use internal knowledge to suppress output to keep test output clean.
-  let consoleErrorSpy;
+  let writeErrorSpy;
 
   beforeAll(() => {
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+    writeErrorSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => { });
   });
 
   afterEach(() => {
-    consoleErrorSpy.mockClear();
+    writeErrorSpy.mockClear();
   });
 
   afterAll(() => {
-    consoleErrorSpy.mockRestore();
+    writeErrorSpy.mockRestore();
   });
 
   test('when specify unknown option with subcommand and action handler then error', () => {
@@ -27,7 +27,7 @@ describe('.version', () => {
 
     let caughtErr;
     try {
-      program.parse(['node', 'info', '--NONSENSE']);
+      program.parse(['node', 'test', 'info', '--NONSENSE']);
     } catch (err) {
       caughtErr = err;
     }
@@ -54,7 +54,7 @@ describe('.version', () => {
     const program = new commander.Command();
     program
       .exitOverride()
-      .arguments('[file]')
+      .argument('[file]')
       .action(() => {});
 
     let caughtErr;
@@ -71,12 +71,25 @@ describe('.version', () => {
     const program = new commander.Command();
     program
       .exitOverride()
-      .arguments('[file]')
+      .argument('[file]')
       .action(() => {});
 
     let caughtErr;
     try {
       program.parse(['node', 'test', 'info', 'a', '--NONSENSE']);
+    } catch (err) {
+      caughtErr = err;
+    }
+    expect(caughtErr.code).toBe('commander.unknownOption');
+  });
+
+  test('when specify unknown option with simple program then error', () => {
+    const program = new commander.Command();
+    program
+      .exitOverride();
+    let caughtErr;
+    try {
+      program.parse(['node', 'test', '--NONSENSE']);
     } catch (err) {
       caughtErr = err;
     }

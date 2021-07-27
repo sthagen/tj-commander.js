@@ -1,25 +1,21 @@
 #!/usr/bin/env node
 
-// const program = require('commander'); // (normal include)
-const program = require('../'); // include commander in git clone of commander repo
+// This example shows a simple use of addHelpText.
+// This is used as an example in the README.
+
+// const { Command } = require('commander'); // (normal include)
+const { Command } = require('../'); // include commander in git clone of commander repo
+const program = new Command();
 
 program
-  .version('0.0.1')
-  .option('-f, --foo', 'enable some foo')
-  .option('-b, --bar', 'enable some bar')
-  .option('-B, --baz', 'enable some baz');
+  .option('-f, --foo', 'enable some foo');
 
-// must be before .parse() since
-// node's emit() is immediate
+program.addHelpText('after', `
 
-program.on('--help', function() {
-  console.log('');
-  console.log('Examples:');
-  console.log('');
-  console.log('  $ custom-help --help');
-  console.log('  $ custom-help -h');
-});
+Example call:
+  $ custom-help --help`);
 
 program.parse(process.argv);
 
-program.help();
+// Try the following:
+//  node custom-help --help

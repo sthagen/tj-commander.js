@@ -1,4 +1,4 @@
-name: Node CI
+name: build
 
 on: [push, pull_request]
 
@@ -7,8 +7,9 @@ jobs:
     name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [12.x, 14.x, 15.x, 16.x]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:

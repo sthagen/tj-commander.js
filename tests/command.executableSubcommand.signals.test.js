@@ -8,7 +8,7 @@ const path = require('path');
 //  https://nodejs.org/api/process.html#process_signal_events
 const describeOrSkipOnWindows = (process.platform === 'win32') ? describe.skip : describe;
 
-// Note: the previous (sinon) test had custom code for SIGUSR1, revist if required:
+// Note: the previous (sinon) test had custom code for SIGUSR1, revisit if required:
 //    As described at https://nodejs.org/api/process.html#process_signal_events
 //    this signal will start a debugger and thus the process might output an
 //    additional error message:
@@ -16,11 +16,13 @@ const describeOrSkipOnWindows = (process.platform === 'win32') ? describe.skip :
 
 describeOrSkipOnWindows.each([['SIGINT'], ['SIGHUP'], ['SIGTERM'], ['SIGUSR1'], ['SIGUSR2']])(
   'test signal handling in executableSubcommand', (value) => {
-    test(`when command killed with ${value} then executableSubcommand receieves ${value}`, (done) => {
+    // Slightly tricky test, stick with callback and disable lint warning.
+    // eslint-disable-next-line jest/no-done-callback
+    test(`when command killed with ${value} then executableSubcommand receives ${value}`, (done) => {
       const pmPath = path.join(__dirname, './fixtures/pm');
 
       // The child process writes to stdout.
-      var proc = childProcess.spawn(pmPath, ['listen'], {});
+      const proc = childProcess.spawn(pmPath, ['listen'], {});
 
       let processOutput = '';
       proc.stdout.on('data', (data) => {

@@ -1,9 +1,9 @@
 const commander = require('../');
 
-// Guideline 10:
-// The first -- argument that is not an option-argument should be accepted as a delimiter indicating the end of options. Any following arguments should be treated as operands, even if they begin with the '-' character.
+// Utility Conventions: http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html#tag_12_02
 //
-// http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html#tag_12_02
+// 12.2 Utility Syntax Guidelines, Guideline 10:
+// The first -- argument that is not an option-argument should be accepted as a delimiter indicating the end of options. Any following arguments should be treated as operands, even if they begin with the '-' character.
 
 test('when arguments includes -- then stop processing options', () => {
   const program = new commander.Command();
@@ -12,8 +12,9 @@ test('when arguments includes -- then stop processing options', () => {
     .option('-b, --bar', 'add some bar');
   program.parse(['node', 'test', '--foo', '--', '--bar', 'baz']);
   // More than one assert, ported from legacy test
-  expect(program.foo).toBe(true);
-  expect(program.bar).toBeUndefined();
+  const opts = program.opts();
+  expect(opts.foo).toBe(true);
+  expect(opts.bar).toBeUndefined();
   expect(program.args).toEqual(['--bar', 'baz']);
 });
 

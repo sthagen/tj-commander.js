@@ -1,107 +1,108 @@
 const childProcess = require('child_process');
 const path = require('path');
+const util = require('util');
+const execFileAsync = util.promisify(childProcess.execFile);
 
 // Calling node explicitly so pm works without file suffix cross-platform.
+
+// Get false positives due to use of testOrSkipOnWindows
+/* eslint-disable jest/no-standalone-expect */
 
 const testOrSkipOnWindows = (process.platform === 'win32') ? test.skip : test;
 const pm = path.join(__dirname, './fixtures/pm');
 
-test('when subcommand file missing then error', (done) => {
-  childProcess.exec(`node ${pm} list`, function(_error, stdout, stderr) {
+test('when subcommand file missing then error', () => {
+  expect.assertions(1);
+  return execFileAsync('node', [pm, 'list']).catch((err) => {
     if (process.platform === 'win32') {
       // Get uncaught thrown error on Windows
-      expect(stderr.length).toBeGreaterThan(0);
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(err.stderr).toBeDefined();
     } else {
-      expect(stderr).toBe('error: pm-list(1) does not exist, try --help\n');
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(err.stderr).toMatch(/Error: 'pm-list' does not exist/);
     }
-    done();
   });
 });
 
-test('when alias subcommand file missing then error', (done) => {
-  childProcess.exec(`node ${pm} lst`, function(_error, stdout, stderr) {
+test('when alias subcommand file missing then error', () => {
+  expect.assertions(1);
+  return execFileAsync('node', [pm, 'lst']).catch((err) => {
     if (process.platform === 'win32') {
       // Get uncaught thrown error on Windows
-      expect(stderr.length).toBeGreaterThan(0);
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(err.stderr).toBeDefined();
     } else {
-      expect(stderr).toBe('error: pm-list(1) does not exist, try --help\n');
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(err.stderr).toMatch(/Error: 'pm-list' does not exist/);
     }
-    done();
   });
 });
 
-test('when subcommand file has no suffix then lookup succeeds', (done) => {
-  childProcess.exec(`node ${pm} install`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('install\n');
-    done();
-  });
+test('when subcommand file has no suffix then lookup succeeds', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'install']);
+  expect(stdout).toBe('install\n');
 });
 
-test('when alias subcommand file has no suffix then lookup succeeds', (done) => {
-  childProcess.exec(`node ${pm} i`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('install\n');
-    done();
-  });
+test('when alias subcommand file has no suffix then lookup succeeds', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'i']);
+  expect(stdout).toBe('install\n');
 });
 
-test('when subcommand target executablefile has no suffix then lookup succeeds', (done) => {
-  childProcess.exec(`node ${pm} specifyInstall`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('install\n');
-    done();
-  });
+test('when subcommand target executablefile has no suffix then lookup succeeds', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'specifyInstall']);
+  expect(stdout).toBe('install\n');
 });
 
-test('when subcommand file suffix .js then lookup succeeds', (done) => {
-  childProcess.exec(`node ${pm} publish`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('publish\n');
-    done();
-  });
+test('when subcommand file suffix .js then lookup succeeds', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'publish']);
+  expect(stdout).toBe('publish\n');
 });
 
-test('when alias subcommand file suffix .js then lookup succeeds', (done) => {
-  childProcess.exec(`node ${pm} p`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('publish\n');
-    done();
-  });
+test('when alias subcommand file suffix .js then lookup succeeds', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'p']);
+  expect(stdout).toBe('publish\n');
 });
 
-test('when subcommand target executablefile has suffix .js then lookup succeeds', (done) => {
-  childProcess.exec(`node ${pm} specifyPublish`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('publish\n');
-    done();
-  });
+test('when subcommand target executablefile has suffix .js then lookup succeeds', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'specifyPublish']);
+  expect(stdout).toBe('publish\n');
 });
 
-testOrSkipOnWindows('when subcommand file is symlink then lookup succeeds', (done) => {
+testOrSkipOnWindows('when subcommand file is symlink then lookup succeeds', async() => {
   const pmlink = path.join(__dirname, 'fixtures', 'pmlink');
-  childProcess.exec(`node ${pmlink} install`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('install\n');
-    done();
-  });
+  const { stdout } = await execFileAsync('node', [pmlink, 'install']);
+  expect(stdout).toBe('install\n');
 });
 
-testOrSkipOnWindows('when subcommand file is double symlink then lookup succeeds', (done) => {
+testOrSkipOnWindows('when subcommand file is double symlink then lookup succeeds', async() => {
   const pmlink = path.join(__dirname, 'fixtures', 'another-dir', 'pm');
-  childProcess.exec(`node ${pmlink} install`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('install\n');
-    done();
-  });
+  const { stdout } = await execFileAsync('node', [pmlink, 'install']);
+  expect(stdout).toBe('install\n');
 });
 
-test('when subcommand suffix is .ts then lookup succeeds', (done) => {
+test('when subcommand suffix is .ts then lookup succeeds', async() => {
   // We support looking for ts files for ts-node in particular, but don't need to test ts-node itself.
-  // The program and the subcommand `pm-install.ts` are both plain JavaScript code.
-  const binLinkTs = path.join(__dirname, 'fixtures-ts', 'pm.ts');
+  // The subcommand is both plain JavaScript code for this test.
+  const binLinkTs = path.join(__dirname, 'fixtures-extensions', 'pm.js');
   // childProcess.execFile('node', ['-r', 'ts-node/register', binLinkTs, 'install'], function(_error, stdout, stderr) {
-  childProcess.execFile('node', [binLinkTs, 'install'], function(_error, stdout, stderr) {
-    expect(stdout).toBe('install\n');
-    done();
-  });
+  const { stdout } = await execFileAsync('node', [binLinkTs, 'try-ts']);
+  expect(stdout).toBe('found .ts\n');
 });
 
-test('when subsubcommand then lookup sub-sub-command', (done) => {
-  childProcess.exec(`node ${pm} cache clear`, function(_error, stdout, stderr) {
-    expect(stdout).toBe('cache-clear\n');
-    done();
-  });
+test('when subcommand suffix is .cjs then lookup succeeds', async() => {
+  const binLinkTs = path.join(__dirname, 'fixtures-extensions', 'pm.js');
+  const { stdout } = await execFileAsync('node', [binLinkTs, 'try-cjs']);
+  expect(stdout).toBe('found .cjs\n');
+});
+
+test('when subcommand suffix is .mjs then lookup succeeds', async() => {
+  const binLinkTs = path.join(__dirname, 'fixtures-extensions', 'pm.js');
+  const { stdout } = await execFileAsync('node', [binLinkTs, 'try-mjs']);
+  expect(stdout).toBe('found .mjs\n');
+});
+
+test('when subsubcommand then lookup sub-sub-command', async() => {
+  const { stdout } = await execFileAsync('node', [pm, 'cache', 'clear']);
+  expect(stdout).toBe('cache-clear\n');
 });
