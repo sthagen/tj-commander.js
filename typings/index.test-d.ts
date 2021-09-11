@@ -293,6 +293,10 @@ expectType<commander.Command>(program.showHelpAfterError());
 expectType<commander.Command>(program.showHelpAfterError(true));
 expectType<commander.Command>(program.showHelpAfterError('See --help'));
 
+// showSuggestionAfterError
+expectType<commander.Command>(program.showSuggestionAfterError());
+expectType<commander.Command>(program.showSuggestionAfterError(false));
+
 // configureOutput
 expectType<commander.Command>(program.configureOutput({ }));
 expectType<commander.OutputConfiguration>(program.configureOutput());
@@ -345,6 +349,9 @@ const baseOption = new commander.Option('-f,--foo', 'foo description');
 expectType<commander.Option>(baseOption.default(3));
 expectType<commander.Option>(baseOption.default(60, 'one minute'));
 
+// env
+expectType<commander.Option>(baseOption.env('PORT'));
+
 // fullDescription
 expectType<string>(baseOption.fullDescription());
 
@@ -360,9 +367,6 @@ expectType<commander.Option>(baseOption.makeOptionMandatory(true));
 expectType<commander.Option>(baseOption.hideHelp());
 expectType<commander.Option>(baseOption.hideHelp(true));
 expectType<commander.Option>(baseOption.hideHelp(false));
-
-// argumentRejected
-expectType<never>(baseOption.argumentRejected('failed'));
 
 // choices
 expectType<commander.Option>(baseOption.choices(['a', 'b']));
