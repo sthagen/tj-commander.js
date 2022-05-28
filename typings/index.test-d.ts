@@ -239,6 +239,10 @@ expectType<commander.Command>(program.description('my description'));
 expectType<string>(program.description());
 expectType<commander.Command>(program.description('my description of command with arg foo', { foo: 'foo description' })); // deprecated
 
+// summary
+expectType<commander.Command>(program.summary('my summary'));
+expectType<string>(program.summary());
+
 // alias
 expectType<commander.Command>(program.alias('my alias'));
 expectType<string>(program.alias());
@@ -417,6 +421,9 @@ expectType<commander.Option>(baseOption.choices(['a', 'b'] as const));
 // conflicts
 expectType<commander.Option>(baseOption.conflicts('a'));
 expectType<commander.Option>(baseOption.conflicts(['a', 'b']));
+
+// implies
+expectType<commander.Option>(baseOption.implies({ option: 'VALUE', colour: false }));
 
 // name
 expectType<string>(baseOption.name());
