@@ -28,7 +28,8 @@ expectType<commander.Argument>(commander.createArgument('<foo>'));
 expectType<string[]>(program.args);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 expectType<any[]>(program.processedArgs);
-expectType<commander.Command[]>(program.commands);
+expectType<readonly commander.Command[]>(program.commands);
+expectType<readonly commander.Option[]>(program.options);
 expectType<commander.Command | null>(program.parent);
 
 // version
@@ -214,7 +215,7 @@ expectType<Promise<commander.Command>>(program.parseAsync(['--option'], { from: 
 expectType<Promise<commander.Command>>(program.parseAsync(['node', 'script.js'] as const));
 
 // parseOptions (and ParseOptionsResult)
-expectType<{operands: string[]; unknown: string[]}>(program.parseOptions(['node', 'script.js', 'hello']));
+expectType<{ operands: string[]; unknown: string[] }>(program.parseOptions(['node', 'script.js', 'hello']));
 
 // opts
 const opts = program.opts();
