@@ -31,7 +31,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-jest": "^23.6.0",
     "jest": "^25.1.0",
-    "standard": "^14.3.1",
+    "standard": "^17.1.0",
     "typescript": "^3.7.5"
   },
   "typings": "typings/index.d.ts",
