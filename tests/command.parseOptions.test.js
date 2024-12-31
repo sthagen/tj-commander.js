@@ -5,7 +5,7 @@ const util = require('util');
 
 const execFileAsync = util.promisify(childProcess.execFile);
 
-// Combination of parse and parseOptions tests which are are more about details
+// Combination of parse and parseOptions tests which are more about details
 // than high level behaviours which are tested elsewhere.
 
 // Tests created from reported bugs
@@ -170,7 +170,7 @@ describe('parseOptions', () => {
 describe('parse and program.args', () => {
   test('when program has known flag and operand then option removed and operand returned', () => {
     const program = new commander.Command();
-    program.option('--global-flag');
+    program.option('--global-flag').argument('[arg...]');
     program.parse('node test.js --global-flag arg'.split(' '));
     expect(program.args).toEqual(['arg']);
   });
@@ -180,7 +180,8 @@ describe('parse and program.args', () => {
     program
       .allowUnknownOption()
       .option('--global-flag')
-      .option('--global-value <value>');
+      .option('--global-value <value>')
+      .argument('[arg...]');
     program.parse(
       'node test.js aaa --global-flag bbb --unknown ccc --global-value value'.split(
         ' ',
@@ -231,7 +232,7 @@ describe('parse and program.args', () => {
 // Commander conformance:
 // - allows separate argument for required option-argument
 // - allows value in same argument for short flag with required option-argument
-// - non-conforming: allows separate argument for optional option-argument if does not start with '-'
+// - non-conforming: allows separate argument for optional option-argument if it does not start with '-'
 // - allows value in same argument for short flag with optional option-argument
 // - allows short flags as per 12.2
 //

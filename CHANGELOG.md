@@ -2,18 +2,87 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- markdownlint-disable MD024 -->
 <!-- markdownlint-disable MD004 -->
+
+## [13.0.0] (2024-12-30)
+
+### Added
+
+- support multiple calls to `.parse()` with default settings ([#2299])
+- add `.saveStateBeforeParse()` and `.restoreStateBeforeParse()` for use by subclasses ([#2299])
+- style routines like `styleTitle()` to add color to help using `.configureHelp()` or Help subclass ([#2251])
+- color related support in `.configureOutput()` for `getOutHasColors()`, `getErrHasColors()`, and `stripColor()` ([#2251])
+- Help property for `minWidthToWrap` ([#2251])
+- Help methods for `displayWidth()`, `boxWrap()`, `preformatted()` et al ([#2251])
+
+### Changed
+
+- *Breaking*: excess command-arguments cause an error by default, see migration tips ([#2223])
+- *Breaking*: throw during Option construction for unsupported option flags, like multiple characters after single `-` ([#2270])
+- *Breaking*: throw on multiple calls to `.parse()` if `storeOptionsAsProperties: true` ([#2299])
+- TypeScript: include implicit `this` in parameters for action handler callback ([#2197])
+
+### Deleted
+
+- *Breaking*: `Help.wrap()` refactored into `formatItem()` and `boxWrap()` ([#2251])
+
+### Migration Tips
+
+**Excess command-arguments**
+
+It is now an error for the user to specify more command-arguments than are expected. (`allowExcessArguments` is now false by default.)
+
+Old code:
+
+```js
+program.option('-p, --port <number>', 'port number');
+program.action((options) => {
+  console.log(program.args);
+});
+```
+
+Now shows an error:
+
+```console
+$ node example.js a b c
+error: too many arguments. Expected 0 arguments but got 3.
+```
+
+You can declare the expected arguments. The help will then be more accurate too. Note that declaring
+new arguments will change what is passed to the action handler.
+
+```js
+program.option('-p, --port <number>', 'port number');
+program.argument('[args...]', 'remote command and arguments'); // expecting zero or more arguments
+program.action((args, options) => {
+  console.log(args);
+});
+```
+
+Or you could suppress the error, useful for minimising changes in legacy code.
+
+```js
+program.option('-p, --port', 'port number');
+program.allowExcessArguments();
+program.action((options) => {
+  console.log(program.args);
+});
+```
+
+## [13.0.0-0] (2024-12-07)
+
+(Released in 13.0.0)
 
 ## [12.1.0] (2024-05-18)
 
 ### Added
 
 - auto-detect special node flags `node --eval` and `node --print` when call `.parse()` with no arguments ([#2164])
-- 
+
 ### Changed
 
 - prefix require of Node.js core modules with `node:` ([#2170])
@@ -312,7 +381,7 @@ A couple of configuration problems now throw an error, which will pick up issues
 - *Breaking:* `CommanderError` code `commander.invalidOptionArgument` renamed `commander.invalidArgument` ([#1508])
 - *Breaking:* TypeScript declaration for `.addTextHelp()` callback no longer allows result of `undefined`, now just `string` ([#1516])
 - refactor `index.tab` into a file per class ([#1522])
-- remove help suggestion from "unknown command" error message (see `.showHelpAfteError()`) ([#1534])
+- remove help suggestion from "unknown command" error message (see `.showHelpAfterError()`) ([#1534])
 - `Command` property `.arg` initialised to empty array (was previously undefined) ([#1529])
 - update dependencies
 
@@ -1135,7 +1204,7 @@ program
 
 ## 0.2.0 / 2011-09-26
 
-* Allow for defaults that are not just boolean. Default peassignment only occurs for --no-*, optional, and required arguments. [Jim Isaacs]
+* Allow for defaults that are not just boolean. Default reassignment only occurs for --no-*, optional, and required arguments. [Jim Isaacs]
 
 ## 0.1.0 / 2011-08-24
 
@@ -1285,6 +1354,12 @@ program
 [#2170]: https://github.com/tj/commander.js/pull/2170
 [#2180]: https://github.com/tj/commander.js/pull/2180
 [#2191]: https://github.com/tj/commander.js/pull/2191
+[#2197]: https://github.com/tj/commander.js/pull/2197
+[#2223]: https://github.com/tj/commander.js/pull/2223
+[#2251]: https://github.com/tj/commander.js/pull/2251
+[#2270]: https://github.com/tj/commander.js/pull/2270
+[#2299]: https://github.com/tj/commander.js/pull/2299
+
 
 <!-- Referenced in 5.x -->
 [#1]: https://github.com/tj/commander.js/issues/1
@@ -1364,7 +1439,9 @@ program
 [#1028]: https://github.com/tj/commander.js/pull/1028
 
 [Unreleased]: https://github.com/tj/commander.js/compare/master...develop
-[12.0.0]: https://github.com/tj/commander.js/compare/v12.0.0...v12.1.0
+[13.0.0]: https://github.com/tj/commander.js/compare/v12.1.0...v13.0.0
+[13.0.0-0]: https://github.com/tj/commander.js/compare/v12.1.0...v13.0.0-0
+[12.1.0]: https://github.com/tj/commander.js/compare/v12.0.0...v12.1.0
 [12.0.0]: https://github.com/tj/commander.js/compare/v11.1.0...v12.0.0
 [12.0.0-1]: https://github.com/tj/commander.js/compare/v12.0.0-0...v12.0.0-1
 [12.0.0-0]: https://github.com/tj/commander.js/compare/v11.1.0...v12.0.0-0

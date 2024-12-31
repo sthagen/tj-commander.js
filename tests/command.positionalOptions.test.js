@@ -424,7 +424,7 @@ describe('program with action handler and passThrough and subcommand', () => {
     expect(sub.opts().debug).toBe(true);
   });
 
-  // This is somewhat of a side-affect of supporting previous test.
+  // This is somewhat of a side-effect of supporting previous test.
   test('when shared option after subcommand then parsed by subcommand', () => {
     const { program, sub } = makeProgram();
     program.parse(['sub', '-g'], { from: 'user' });
@@ -439,6 +439,7 @@ describe('program with allowUnknownOption', () => {
   test('when passThroughOptions and unknown option then arguments from unknown passed through', () => {
     const program = new commander.Command();
     program.passThroughOptions().allowUnknownOption().option('--debug');
+    program.argument('[args...]');
 
     program.parse(['--unknown', '--debug'], { from: 'user' });
     expect(program.args).toEqual(['--unknown', '--debug']);
@@ -447,6 +448,7 @@ describe('program with allowUnknownOption', () => {
   test('when positionalOptions and unknown option then known options then known option parsed', () => {
     const program = new commander.Command();
     program.enablePositionalOptions().allowUnknownOption().option('--debug');
+    program.argument('[args...]');
 
     program.parse(['--unknown', '--debug'], { from: 'user' });
     expect(program.opts().debug).toBe(true);
