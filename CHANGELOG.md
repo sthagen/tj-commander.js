@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- markdownlint-disable MD024 -->
 <!-- markdownlint-disable MD004 -->
 
+## [13.1.0] (2025-01-21)
+
+### Added
+
+- support a pair of long option flags to allow a memorable shortened flag, like `.option('--ws, --workspace')` ([#2312])
+
 ## [13.0.0] (2024-12-30)
 
 ### Added
@@ -23,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - *Breaking*: excess command-arguments cause an error by default, see migration tips ([#2223])
 - *Breaking*: throw during Option construction for unsupported option flags, like multiple characters after single `-` ([#2270])
+  - note: support for dual long option flags added in Commander 13.1
 - *Breaking*: throw on multiple calls to `.parse()` if `storeOptionsAsProperties: true` ([#2299])
 - TypeScript: include implicit `this` in parameters for action handler callback ([#2197])
 
@@ -71,6 +78,27 @@ program.allowExcessArguments();
 program.action((options) => {
   console.log(program.args);
 });
+```
+
+**Stricter option flag parsing**
+
+Commander now throws an error for option flag combinations that are not supported.
+In particular, a short flag with multiple characters is now an error.
+
+```js
+program.option('-ws, --workspace'); // throws error
+```
+
+A short option has a single character:
+
+```js
+program.option('-w, --workspace');
+```
+
+Or from Commander 13.1 you can have an extra long flag instead of a short flag to allow a more memorable shortcut for the full name:
+
+```js
+program.option('--ws, --workspace');
 ```
 
 ## [13.0.0-0] (2024-12-07)
@@ -1359,6 +1387,7 @@ program
 [#2251]: https://github.com/tj/commander.js/pull/2251
 [#2270]: https://github.com/tj/commander.js/pull/2270
 [#2299]: https://github.com/tj/commander.js/pull/2299
+[#2312]: https://github.com/tj/commander.js/pull/2312
 
 
 <!-- Referenced in 5.x -->
@@ -1439,6 +1468,7 @@ program
 [#1028]: https://github.com/tj/commander.js/pull/1028
 
 [Unreleased]: https://github.com/tj/commander.js/compare/master...develop
+[13.1.0]: https://github.com/tj/commander.js/compare/v13.0.0...v13.1.0
 [13.0.0]: https://github.com/tj/commander.js/compare/v12.1.0...v13.0.0
 [13.0.0-0]: https://github.com/tj/commander.js/compare/v12.1.0...v13.0.0-0
 [12.1.0]: https://github.com/tj/commander.js/compare/v12.0.0...v12.1.0
