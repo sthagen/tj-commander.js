@@ -88,10 +88,10 @@ console.log(program.args[0].split(options.separator, limit));
 ```
 
 ```console
-$ node split.js -s / --fits a/b/c
+$ node split.js -s - --fits a-b-c
 error: unknown option '--fits'
 (Did you mean --first?)
-$ node split.js -s / --first a/b/c
+$ node split.js -s - --first a-b-c
 [ 'a' ]
 ```
 
@@ -135,7 +135,7 @@ Options:
   -s, --separator <char>  separator character (default: ",")
   -h, --help              display help for command
 
-$ node string-util.js split --separator=/ a/b/c
+$ node string-util.js split --separator=- a-b-c
 [ 'a', 'b', 'c' ]
 ```
 
@@ -1060,7 +1060,7 @@ program
 
 ## 支持
 
-当前版本的 Commander 在 LTS 版本的 Node.js 上完全支持。并且至少需要 v18。
+当前版本的 Commander 在 LTS 版本的 Node.js 上完全支持。并且至少需要 v22.12。
 （使用更低版本 Node.js 的用户建议安装更低版本的 Commander）
 
 社区支持请访问项目的 [Issues](https://github.com/tj/commander.js/issues)。

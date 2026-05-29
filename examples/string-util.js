@@ -1,4 +1,4 @@
-const { Command } = require('commander');
+import { Command } from 'commander';
 const program = new Command();
 
 // This is used as an example in the README for the Quick Start.
@@ -33,6 +33,6 @@ program.parse();
 // Try the following:
 //    node string-util
 //    node string-util help split
-//    node string-util split --separator=/ a/b/c
+//    node string-util split --separator=- a-b-c
 //    node string-util split --first a,b,c
 //    node string-util join a b c d
